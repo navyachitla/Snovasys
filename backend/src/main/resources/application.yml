@@ -1,0 +1,69 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: balancevault-api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:mysql}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 25
+
+---
+# MySQL Profile (Default Production & Local with Docker)
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:balancevault_db}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:rootpassword}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+---
+# Dev / In-Memory Profile (Instant local dev & automated testing without external MySQL)
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:balancevault;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+---
+# Application Specific Security & Ledger Settings
+balancevault:
+  jwt:
+    # 256-bit secret key for HMAC-SHA256
+    secret: ${JWT_SECRET:4c6564676572596f7543616e50726f766542616c616e63655661756c74323032365365637572654b657921}
+    expiration-ms: 900000 # 15 minutes (900 seconds)
+    issuer: balancevault-api
+    audience: balancevault-client
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,https://balance-vault.vercel.app}
+  bootstrap:
+    admin:
+      enabled: true
+      email: ${ADMIN_BOOTSTRAP_EMAIL:admin@balancevault.com}
+      name: ${ADMIN_BOOTSTRAP_NAME:System Administrator}
+      password: ${ADMIN_BOOTSTRAP_PASSWORD:Admin@Vault2026!}
+      role: ADMIN
