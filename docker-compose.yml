@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: balancevault-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: balancevault_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: balancevault-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: balancevault_db
+      DB_USER: root
+      DB_PASSWORD: rootpassword
+      PORT: 8080
+      ADMIN_BOOTSTRAP_PASSWORD: Admin@Vault2026!
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
