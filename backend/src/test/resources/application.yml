@@ -1,0 +1,32 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: balancevault-test
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+balancevault:
+  jwt:
+    secret: 4c6564676572596f7543616e50726f766542616c616e63655661756c74323032365365637572654b657921
+    expiration-ms: 3600000
+    issuer: balancevault-api
+    audience: balancevault-client
+  cors:
+    allowed-origins: http://localhost:5173
+  bootstrap:
+    admin:
+      enabled: true
+      email: admin@balancevault.test
+      name: Test Administrator
+      password: TestAdminPassword123!
+      role: ADMIN
