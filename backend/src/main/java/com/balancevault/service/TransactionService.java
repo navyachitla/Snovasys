@@ -94,10 +94,12 @@ public class TransactionService {
 
         // Debit Entry for Source
         LedgerEntry debitEntry = new LedgerEntry(tx, source, EntryType.DEBIT, req.amountPaise(), source.getBalancePaise());
+        tx.addEntry(debitEntry);
         ledgerEntryRepository.save(debitEntry);
 
         // Credit Entry for Destination
         LedgerEntry creditEntry = new LedgerEntry(tx, dest, EntryType.CREDIT, req.amountPaise(), dest.getBalancePaise());
+        tx.addEntry(creditEntry);
         ledgerEntryRepository.save(creditEntry);
 
         auditService.record(user.getId(), user.getRole().name(), "TRANSFER_POSTED",
@@ -151,6 +153,7 @@ public class TransactionService {
         tx = transactionRepository.save(tx);
 
         LedgerEntry creditEntry = new LedgerEntry(tx, account, EntryType.CREDIT, req.amountPaise(), account.getBalancePaise());
+        tx.addEntry(creditEntry);
         ledgerEntryRepository.save(creditEntry);
 
         auditService.record(user.getId(), user.getRole().name(), "DEPOSIT_POSTED",
@@ -212,6 +215,7 @@ public class TransactionService {
         tx = transactionRepository.save(tx);
 
         LedgerEntry debitEntry = new LedgerEntry(tx, account, EntryType.DEBIT, req.amountPaise(), account.getBalancePaise());
+        tx.addEntry(debitEntry);
         ledgerEntryRepository.save(debitEntry);
 
         auditService.record(user.getId(), user.getRole().name(), "WITHDRAWAL_POSTED",

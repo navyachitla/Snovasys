@@ -48,7 +48,7 @@ public class JournalTransaction {
     @JoinColumn(name = "initiated_by_user_id")
     private User initiatedBy;
 
-    @OneToMany(mappedBy = "journalTransaction", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "journalTransaction")
     private List<LedgerEntry> entries = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
