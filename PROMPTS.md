@@ -1,6 +1,6 @@
 # PROMPTS.md — AI Engineering Log & Decisions
 
-> **Candidate:** Kavya Chitla  
+> **Candidate:** Navya Chitla  
 > **Challenge:** Snovasys Fresher Hiring Challenge 2026 — BalanceVault  
 > **Theme:** Money movement with a ledger you can prove  
 > **Technology Stack:** Java Spring Boot, MySQL, React  
