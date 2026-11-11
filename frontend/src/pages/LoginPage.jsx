@@ -38,13 +38,13 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Email address</label>
+            <label className="form-label">Email or Username</label>
             <input
-              type="email"
+              type="text"
               className="form-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@example.com"
+              placeholder="admin@balancevault.com or admin"
               required
             />
           </div>
@@ -71,7 +71,29 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="auth-footer">
+        <div style={{ marginTop: '16px', padding: '12px', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}>
+          <div style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--text-primary)' }}>Quick Demo Logins:</div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{ flex: 1, padding: '6px 8px', fontSize: '0.8rem' }}
+              onClick={() => { setEmail('admin@balancevault.com'); setPassword('Admin@Vault2026!'); }}
+            >
+              👑 Fill Admin
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{ flex: 1, padding: '6px 8px', fontSize: '0.8rem' }}
+              onClick={() => { setEmail('demo@balancevault.com'); setPassword('Demo@Vault2026!'); }}
+            >
+              👤 Fill Demo User
+            </button>
+          </div>
+        </div>
+
+        <div className="auth-footer" style={{ marginTop: '12px' }}>
           Don't have an account? <Link to="/register">Create an account</Link>
         </div>
       </div>

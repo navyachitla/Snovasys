@@ -61,6 +61,11 @@ public class AuthService {
     @Transactional
     public AuthResponse login(LoginRequest req, String clientIp) {
         String normalizedEmail = req.email().trim().toLowerCase();
+        if ("admin".equals(normalizedEmail)) {
+            normalizedEmail = "admin@balancevault.com";
+        } else if ("demo".equals(normalizedEmail)) {
+            normalizedEmail = "demo@balancevault.com";
+        }
         User user = userRepository.findByEmail(normalizedEmail)
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
