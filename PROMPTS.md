@@ -92,6 +92,36 @@ This document records the prompts used, AI assistant suggestions, where the AI w
 
 ---
 
+### Incident 6: Local Service Port Collisions (Port 8080 vs Background CI/CD)
+* **Context:** Running the unified Spring Boot fat JAR locally.
+* **What the AI Suggested:**
+  The AI configured the default Spring Boot port to `8080`.
+* **Why the AI Was Wrong:**
+  On developer machines, standard port `8080` is frequently occupied by existing background services (such as Jenkins or local proxies). Attempting to access `localhost:8080` resulted in redirecting to a local Jenkins login screen with `Invalid username or password` errors instead of the BalanceVault application.
+* **What I Fixed:**
+  1. Reconfigured BalanceVault default server port to `9090` in `application.yml` (`server.port: ${PORT:9090}`).
+  2. Created an automated PowerShell startup script (`run.ps1`) that sets environment profiles, boots the application, and automatically launches the browser to `http://localhost:9090`.
+  3. Ensured cloud deployment platforms (Render/Railway) dynamically bind to the platform-injected `${PORT}` variable without hardcoding.
+
+---
+
+### Incident 7: System Reserve Vault Account for External Deposits and Withdrawals
+* **Context:** In double-entry accounting, money cannot be created out of nothing. When an external cash or bank deposit occurs, a single credit to a customer account would break the fundamental accounting equation $\sum \text{Debits} \equiv \sum \text{Credits}$.
+* **What the AI Suggested:**
+  The AI initially created single-sided ledger entries for deposits and withdrawals, meaning total system debits did not balance total system credits during deposits.
+* **Why the AI Was Wrong:**
+  A true double-entry ledger requires balanced offsetting entries for every financial movement. Without a system clearing account, the bank's mathematical invariant cannot be proven globally across the institution.
+* **What I Fixed:**
+  1. Bootstrapped a dedicated `ACT-SYSTEM-VAULT` (type `VAULT`) in `DataInitializer.java` to act as the institutional cash clearinghouse.
+  2. Updated `TransactionService`:
+     * Deposits debit `ACT-SYSTEM-VAULT` and credit the customer account.
+     * Withdrawals debit the customer account and credit `ACT-SYSTEM-VAULT`.
+     * Transfers debit the source account and credit the destination account.
+  3. Created an aggregate endpoint `/api/ledger/proof` and live UI verification badge proving that:
+     $$\sum \text{Total Debits} - \sum \text{Total Credits} \equiv 0 \quad (\text{Variance: ₹0.00})$$
+
+---
+
 ## 3. Honest Statement of What is Finished vs Unfinished
 
 ### What is Finished & Fully Verified:
