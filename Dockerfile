@@ -7,7 +7,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Build Spring Boot Backend
-FROM eclipse-adoptium:21-jdk-jammy AS backend-builder
+FROM eclipse-temurin:21-jdk-jammy AS backend-builder
 WORKDIR /app/backend
 COPY backend/pom.xml backend/mvnw ./
 COPY backend/.mvn ./.mvn
@@ -18,7 +18,7 @@ COPY --from=frontend-builder /app/frontend/dist/ ./src/main/resources/static/
 RUN ./mvnw clean package -DskipTests
 
 # Stage 3: Lightweight Production JRE Runtime
-FROM eclipse-adoptium:21-jre-jammy
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 COPY --from=backend-builder /app/backend/target/*.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=dev

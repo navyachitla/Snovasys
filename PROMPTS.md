@@ -122,6 +122,18 @@ This document records the prompts used, AI assistant suggestions, where the AI w
 
 ---
 
+### Incident 8: Official Docker Hub Base Image Namespace (`eclipse-temurin` vs `eclipse-adoptium`)
+* **Context:** Containerizing the application for multi-stage Docker deployment on Render / Cloud.
+* **What the AI Suggested:**
+  The AI wrote `FROM eclipse-adoptium:21-jdk-jammy` and `FROM eclipse-adoptium:21-jre-jammy` in the Dockerfile.
+* **Why the AI Was Wrong:**
+  On Docker Hub, Eclipse Adoptium publishes its official OpenJDK images under the project name **`eclipse-temurin`** rather than `eclipse-adoptium`. Render's build failed with `docker.io/library/eclipse-adoptium:21-jre-jammy: not found`.
+* **What I Fixed:**
+  1. Updated all Dockerfile stages to use the official Docker Hub image tags: `eclipse-temurin:21-jdk-jammy` (for the Maven compilation stage) and `eclipse-temurin:21-jre-jammy` (for the lightweight production runtime).
+  2. Verified container build compatibility for single-click cloud deployment.
+
+---
+
 ## 3. Honest Statement of What is Finished vs Unfinished
 
 ### What is Finished & Fully Verified:
