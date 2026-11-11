@@ -16,16 +16,16 @@ if (Test-Path $javaCandidate) {
 }
 
 $env:SPRING_PROFILES_ACTIVE = "dev"
-$env:PORT = "8080"
+$env:PORT = "9090"
 
-Write-Host "--> Launching BalanceVault at http://localhost:8080 ..." -ForegroundColor Cyan
+Write-Host "--> Launching BalanceVault at http://localhost:9090 ..." -ForegroundColor Cyan
 Write-Host "--> Default Logins available right on the screen:" -ForegroundColor Gray
 Write-Host "    - Admin:   admin@balancevault.com / Admin@Vault2026!" -ForegroundColor Gray
 Write-Host "    - User:    demo@balancevault.com  / Demo@Vault2026!" -ForegroundColor Gray
 Write-Host "    - Auditor: auditor@balancevault.com / Auditor@Vault2026!" -ForegroundColor Gray
 
-# Automatically open default browser after a brief delay
-Start-Process "http://localhost:8080"
+# Automatically open default browser
+Start-Process "http://localhost:9090"
 
 # Execute Standalone Fat JAR
 & java -jar backend\target\balancevault-api-1.0.0.jar

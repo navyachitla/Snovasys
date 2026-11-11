@@ -100,7 +100,7 @@ export default function LoginPage() {
             </button>
           </div>
           <div style={{ marginTop: '8px', fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
-            Running on <strong>http://localhost:8080</strong> (Spring Boot & MySQL double-entry engine).
+            Running on <strong>http://localhost:9090</strong> (Spring Boot & MySQL double-entry engine).
           </div>
         </div>
 
