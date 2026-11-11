@@ -78,4 +78,9 @@ public class TransactionController {
                 "createdAt", tx.getCreatedAt()
         )));
     }
+
+    @GetMapping("/ledger/proof")
+    public ResponseEntity<Map<String, Object>> getLedgerProof() {
+        return ResponseEntity.ok(transactionService.getLedgerProof());
+    }
 }

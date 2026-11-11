@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public Endpoints
-                        .requestMatchers("/api/ready").permitAll()
+                        .requestMatchers("/api/ready", "/api/ledger/proof").permitAll()
                         .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/accept-invitation").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

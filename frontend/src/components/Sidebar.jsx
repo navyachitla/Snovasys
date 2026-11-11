@@ -32,6 +32,9 @@ export default function Sidebar() {
         <NavLink to="/statements" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <span>📜</span> Statements
         </NavLink>
+        <NavLink to="/ledger-proof" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <span>⚖️</span> Ledger Proof
+        </NavLink>
 
         {isAccountHolder && (
           <>

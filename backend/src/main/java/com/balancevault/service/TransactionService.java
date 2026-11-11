@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.HexFormat;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -156,6 +157,15 @@ public class TransactionService {
         tx.addEntry(creditEntry);
         ledgerEntryRepository.save(creditEntry);
 
+        // System Vault Reserve Offset for Double-Entry Equilibrium
+        Optional<Account> vaultOpt = accountRepository.findByAccountNumber("ACT-SYSTEM-VAULT");
+        if (vaultOpt.isPresent()) {
+            Account vault = vaultOpt.get();
+            LedgerEntry debitVault = new LedgerEntry(tx, vault, EntryType.DEBIT, req.amountPaise(), vault.getBalancePaise());
+            tx.addEntry(debitVault);
+            ledgerEntryRepository.save(debitVault);
+        }
+
         auditService.record(user.getId(), user.getRole().name(), "DEPOSIT_POSTED",
                 "JOURNAL_TRANSACTION", tx.getId(),
                 "Deposited " + req.amountPaise() + " paise to account " + account.getAccountNumber(),
@@ -217,6 +227,15 @@ public class TransactionService {
         LedgerEntry debitEntry = new LedgerEntry(tx, account, EntryType.DEBIT, req.amountPaise(), account.getBalancePaise());
         tx.addEntry(debitEntry);
         ledgerEntryRepository.save(debitEntry);
+
+        // System Vault Reserve Offset for Double-Entry Equilibrium
+        Optional<Account> vaultWithdrawOpt = accountRepository.findByAccountNumber("ACT-SYSTEM-VAULT");
+        if (vaultWithdrawOpt.isPresent()) {
+            Account vault = vaultWithdrawOpt.get();
+            LedgerEntry creditVault = new LedgerEntry(tx, vault, EntryType.CREDIT, req.amountPaise(), vault.getBalancePaise());
+            tx.addEntry(creditVault);
+            ledgerEntryRepository.save(creditVault);
+        }
 
         auditService.record(user.getId(), user.getRole().name(), "WITHDRAWAL_POSTED",
                 "JOURNAL_TRANSACTION", tx.getId(),
@@ -287,5 +306,27 @@ public class TransactionService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Map<String, Object> getLedgerProof() {
+        Long totalDebits = ledgerEntryRepository.sumTotalByType(EntryType.DEBIT);
+        Long totalCredits = ledgerEntryRepository.sumTotalByType(EntryType.CREDIT);
+        long debits = totalDebits != null ? totalDebits : 0L;
+        long credits = totalCredits != null ? totalCredits : 0L;
+        long variance = debits - credits;
+        long txCount = transactionRepository.count();
+        long entryCount = ledgerEntryRepository.count();
+
+        return Map.of(
+                "totalDebitsPaise", debits,
+                "totalCreditsPaise", credits,
+                "variancePaise", variance,
+                "isBalanced", variance == 0,
+                "totalTransactions", txCount,
+                "totalLedgerEntries", entryCount,
+                "proofStatus", variance == 0 ? "MATHEMATICALLY_VERIFIED" : "DISCREPANCY_DETECTED",
+                "verifiedAt", Instant.now().toString(),
+                "formula", "SUM(Debits) - SUM(Credits) == 0"
+        );
     }
 }

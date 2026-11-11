@@ -13,6 +13,7 @@ import StatementsPage from './pages/StatementsPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminOnboardingPage from './pages/AdminOnboardingPage';
 import AuditPage from './pages/AuditPage';
+import LedgerProofPage from './pages/LedgerProofPage';
 
 function ProtectedLayout() {
   const { isAuthenticated, loading } = useAuth();
@@ -42,6 +43,7 @@ function ProtectedLayout() {
           <Route path="/admin/users" element={<AdminUsersPage />} />
           <Route path="/admin/onboarding" element={<AdminOnboardingPage />} />
           <Route path="/audit" element={<AuditPage />} />
+          <Route path="/ledger-proof" element={<LedgerProofPage />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </div>

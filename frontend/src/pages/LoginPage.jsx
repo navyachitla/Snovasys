@@ -72,24 +72,35 @@ export default function LoginPage() {
         </form>
 
         <div style={{ marginTop: '16px', padding: '12px', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}>
-          <div style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--text-primary)' }}>Quick Demo Logins:</div>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ fontWeight: 600, marginBottom: '8px', color: 'var(--text-primary)' }}>Quick Role Logins:</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
             <button
               type="button"
               className="btn btn-secondary btn-sm"
-              style={{ flex: 1, padding: '6px 8px', fontSize: '0.8rem' }}
+              style={{ padding: '6px 4px', fontSize: '0.75rem', textAlign: 'center' }}
               onClick={() => { setEmail('admin@balancevault.com'); setPassword('Admin@Vault2026!'); }}
             >
-              👑 Fill Admin
+              👑 Admin
             </button>
             <button
               type="button"
               className="btn btn-secondary btn-sm"
-              style={{ flex: 1, padding: '6px 8px', fontSize: '0.8rem' }}
+              style={{ padding: '6px 4px', fontSize: '0.75rem', textAlign: 'center' }}
               onClick={() => { setEmail('demo@balancevault.com'); setPassword('Demo@Vault2026!'); }}
             >
-              👤 Fill Demo User
+              👤 User
             </button>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              style={{ padding: '6px 4px', fontSize: '0.75rem', textAlign: 'center' }}
+              onClick={() => { setEmail('auditor@balancevault.com'); setPassword('Auditor@Vault2026!'); }}
+            >
+              🔍 Auditor
+            </button>
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+            Running on <strong>http://localhost:8080</strong> (Spring Boot & MySQL double-entry engine).
           </div>
         </div>
 
