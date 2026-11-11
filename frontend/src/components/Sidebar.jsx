@@ -75,13 +75,27 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="user-profile">
+        <div className="user-profile" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '8px' }}>
           <div className="user-info">
             <span className="user-name">{user?.fullName || 'User'}</span>
             <span className="user-role-badge">{user?.role?.replace('_', ' ')}</span>
           </div>
-          <button onClick={handleLogout} className="logout-btn" title="Sign Out">
-            🚪
+          <button
+            onClick={handleLogout}
+            className="btn btn-secondary btn-sm"
+            style={{
+              width: '100%',
+              color: 'var(--rose-400)',
+              borderColor: 'rgba(244, 63, 94, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              padding: '8px'
+            }}
+            title="Sign Out of BalanceVault"
+          >
+            <span>🚪</span> <strong>Sign Out</strong>
           </button>
         </div>
       </div>

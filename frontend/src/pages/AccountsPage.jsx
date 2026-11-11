@@ -8,6 +8,7 @@ export default function AccountsPage() {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState(null);
+  const [depositingId, setDepositingId] = useState(null);
   const { isAccountHolder } = useAuth();
 
   useEffect(() => {
@@ -21,6 +22,23 @@ export default function AccountsPage() {
     navigator.clipboard.writeText(num);
     setCopiedId(num);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleQuickDeposit = async (accountId) => {
+    try {
+      setDepositingId(accountId);
+      await apiRequest('/api/deposits', {
+        method: 'POST',
+        headers: { 'Idempotency-Key': crypto.randomUUID() },
+        body: { accountId, amountPaise: 500000, description: 'Quick Test Deposit (+₹5,000)' },
+      });
+      const data = await apiRequest('/api/accounts');
+      setAccounts(data.accounts || []);
+    } catch (err) {
+      alert(err.message || 'Deposit failed');
+    } finally {
+      setDepositingId(null);
+    }
   };
 
   return (
@@ -79,9 +97,20 @@ export default function AccountsPage() {
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
                   <span className={`badge badge-${acc.status.toLowerCase()}`}>{acc.status}</span>
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    {isAccountHolder && (
+                      <button
+                        onClick={() => handleQuickDeposit(acc.id)}
+                        disabled={depositingId === acc.id}
+                        className="btn btn-secondary btn-sm"
+                        style={{ fontSize: '0.75rem', padding: '4px 8px' }}
+                        title="Add test funds to this account"
+                      >
+                        {depositingId === acc.id ? 'Adding...' : '➕ +₹5,000'}
+                      </button>
+                    )}
                     <Link to="/statements" className="btn btn-outline btn-sm">
-                      View Ledger
+                      Ledger
                     </Link>
                     {isAccountHolder && (
                       <Link to="/transactions/transfer" className="btn btn-primary btn-sm">
